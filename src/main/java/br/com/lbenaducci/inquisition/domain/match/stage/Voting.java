@@ -2,61 +2,35 @@ package br.com.lbenaducci.inquisition.domain.match.stage;
 
 import br.com.lbenaducci.inquisition.domain.character.Character;
 import br.com.lbenaducci.inquisition.domain.character.CharacterStatus;
-import br.com.lbenaducci.inquisition.domain.match.stage.dtos.CharacterVote;
+import br.com.lbenaducci.inquisition.domain.match.stage.dtos.VoteCharacter;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toSet;
-
-public final class Voting implements Stage<Character> {
-	private final List<CharacterVote> votes = new ArrayList<>();
+public final class Voting extends Stage<Character, VoteCharacter> {
 
 	@Override
-	public Stage<?> next() {
-		Set<Character> winners = votes.stream()
-		                              .map(CharacterVote::getCharacter)
-		                              .collect(collectingAndThen(toSet(), l -> l.stream()
-		                                                                        .filter(it -> it.isWinner(l))
-		                                                                        .collect(toSet())));
-		if(winners.isEmpty()) {
-			return new Day();
-		}
-
-		End end = new End();
-		end.setCharacters(winners);
-
-		return end;
+	protected Day nextEvent() {
+		return new Day();
 	}
 
 	@Override
-	public SequencedSet<Character> getCharacter() {
-		return votes.stream()
-		            .filter(CharacterVote::canVote)
-		            .map(CharacterVote::getCharacter)
-		            .collect(Collectors.toCollection(LinkedHashSet::new));
-	}
-
-	@Override
-	public void setCharacters(Set<Character> characters) {
-		characters.forEach(it -> votes.add(new CharacterVote(it, it.canVote())));
-		Collections.shuffle(votes);
+	public VoteCharacter toTurnCharacter(Character character) {
+		return new VoteCharacter(character, character.canVote());
 	}
 
 	@Override
 	public Character getResult() {
-		if(votes.stream().anyMatch(CharacterVote::canVote)) {
+		if(turnCharacters.stream().anyMatch(VoteCharacter::canDoAction)) {
 			throw new IllegalArgumentException("All characters must vote");
 		}
-		Integer max = votes.stream()
-		                   .map(CharacterVote::getVotes)
+		Integer max = turnCharacters.stream()
+		                   .map(VoteCharacter::getVotes)
 		                   .max(Integer::compareTo)
 		                   .orElse(null);
-		List<Character> mostVoted = votes.stream()
+		List<Character> mostVoted = turnCharacters.stream()
 		                                 .filter(it -> it.getVotes() == max)
-		                                 .map(CharacterVote::getCharacter)
+		                                 .map(VoteCharacter::getCharacter)
 		                                 .toList();
 		if(mostVoted.size() > 1) {
 			return null;
@@ -67,9 +41,9 @@ public final class Voting implements Stage<Character> {
 	}
 
 	public void vote(Character voter, Character target) {
-		AtomicReference<CharacterVote> atmVoter = new AtomicReference<>();
-		AtomicReference<CharacterVote> atmTarget = new AtomicReference<>();
-		votes.stream()
+		AtomicReference<VoteCharacter> atmVoter = new AtomicReference<>();
+		AtomicReference<VoteCharacter> atmTarget = new AtomicReference<>();
+		turnCharacters.stream()
 		     .filter(it -> it.getCharacter().equals(voter) || it.getCharacter().equals(target))
 		     .forEach(it -> {
 			     if(it.getCharacter().equals(voter)) {
@@ -78,15 +52,15 @@ public final class Voting implements Stage<Character> {
 				     atmTarget.set(it);
 			     }
 		     });
-		CharacterVote characterVoter = atmVoter.get();
-		CharacterVote characterTarget = atmTarget.get();
-		if(characterVoter == null || !characterVoter.canVote()) {
+		VoteCharacter voterCharacter = atmVoter.get();
+		VoteCharacter targetCharacter = atmTarget.get();
+		if(voterCharacter == null || !voterCharacter.canDoAction()) {
 			throw new IllegalArgumentException("Character cannot vote");
 		}
-		if(characterTarget == null || characterTarget.getCharacter().getStatus() == CharacterStatus.DEAD) {
+		if(targetCharacter == null || targetCharacter.getCharacter().getStatus() == CharacterStatus.DEAD) {
 			throw new IllegalArgumentException("Character cannot voted");
 		}
-		characterTarget.vote();
-		characterVoter.setCanVote(false);
+		targetCharacter.vote();
+		voterCharacter.setCanDoAction(false);
 	}
 }
