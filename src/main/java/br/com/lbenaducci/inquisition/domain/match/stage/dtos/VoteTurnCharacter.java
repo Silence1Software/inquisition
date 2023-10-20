@@ -1,12 +1,12 @@
 package br.com.lbenaducci.inquisition.domain.match.stage.dtos;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.match.MatchPlayer;
 
-public class VoteTurnCharacter extends TurnCharacter{
+public class VoteTurnCharacter extends TurnCharacter {
 	private int votes;
 
-	public VoteTurnCharacter(Character character, boolean canVote) {
-		super(character, canVote);
+	public VoteTurnCharacter(MatchPlayer matchPlayer, boolean canVote) {
+		super(matchPlayer, canVote);
 		this.votes = 0;
 	}
 

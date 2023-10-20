@@ -1,9 +1,9 @@
 package br.com.lbenaducci.inquisition.domain.match.stage.dtos;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.match.MatchPlayer;
 
 public class NightTurnCharacter extends TurnCharacter {
-	public NightTurnCharacter(Character character, boolean canDoAction) {
-		super(character, canDoAction);
+	public NightTurnCharacter(MatchPlayer matchPlayer, boolean canDoAction) {
+		super(matchPlayer, canDoAction);
 	}
 }
