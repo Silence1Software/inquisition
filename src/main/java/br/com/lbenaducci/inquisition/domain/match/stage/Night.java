@@ -1,8 +1,23 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-public final class Night implements Stage{
+import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.match.stage.dtos.NightTurnCharacter;
+import br.com.lbenaducci.inquisition.domain.match.stage.dtos.NightResult;
+
+public final class Night extends Stage<NightResult, NightTurnCharacter> {
+
 	@Override
-	public Stage next() {
+	protected Event nextEvent() {
 		return new Event();
+	}
+
+	@Override
+	protected NightTurnCharacter toTurnCharacter(Character character) {
+		return new NightTurnCharacter(character, character instanceof br.com.lbenaducci.inquisition.domain.character.NightCharacter);
+	}
+
+	@Override
+	public NightResult getResult() {
+		return null;
 	}
 }
