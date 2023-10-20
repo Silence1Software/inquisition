@@ -2,19 +2,25 @@ package br.com.lbenaducci.inquisition.domain.character;
 
 import java.util.Set;
 
-public class Villager extends Character {
+public class Witch extends Character implements NightCharacter {
+
 	@Override
 	public String getName() {
-		return "Villager";
+		return "Witch";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Do Nothing";
+		return "Kill Villagers";
 	}
 
 	@Override
 	public boolean isWinner(Set<Character> characters) {
-		return isAlive() && characters.stream().allMatch(Villager.class::isInstance);
+		return isAlive() && characters.stream().allMatch(Witch.class::isInstance);
+	}
+
+	@Override
+	public void nightAction() {
+
 	}
 }
