@@ -2,22 +2,47 @@ package br.com.lbenaducci.inquisition.domain.character;
 
 import java.util.Set;
 
-public interface Character {
-	String getName();
+public abstract class Character {
+	private CharacterStatus status;
+	private boolean canVote;
 
-	String getDescription();
+	public abstract String getName();
 
-	CharacterStatus getStatus();
+	public abstract String getDescription();
 
-	void setStatus(CharacterStatus status);
+	public final CharacterStatus getStatus() {
+		return status;
+	}
 
-	boolean canVote();
+	public final boolean isAlive() {
+		return getStatus() != CharacterStatus.DEAD;
+	}
 
-	void setCanVote(boolean canVote);
+	public final void protect() {
+		if(isAlive()) {
+			this.status = CharacterStatus.PROTECTED;
+		}
+	}
 
-	boolean isWinner(Set<Character> characters);
+	public final boolean canVote() {
+		return canVote && isAlive();
+	}
 
-	void onKicked();
+	public final void setCanVote(boolean canVote) {
+		this.canVote = canVote;
+	}
 
-	void onDeath();
+	public abstract boolean isWinner(Set<Character> characters);
+
+	public void onKicked() {
+		this.status = CharacterStatus.DEAD;
+	}
+
+	public void onDeath() {
+		if(this.status != CharacterStatus.PROTECTED) {
+			this.status = CharacterStatus.ALIVE;
+		} else {
+			this.status = CharacterStatus.DEAD;
+		}
+	}
 }

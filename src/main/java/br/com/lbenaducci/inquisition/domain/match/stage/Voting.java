@@ -41,9 +41,7 @@ public final class Voting implements Stage<Character> {
 
 	@Override
 	public void setCharacters(Set<Character> characters) {
-		characters.forEach(it -> {
-			votes.add(new CharacterVote(it, it.getStatus() != CharacterStatus.DEAD && it.canVote()));
-		});
+		characters.forEach(it -> votes.add(new CharacterVote(it, it.canVote())));
 		Collections.shuffle(votes);
 	}
 
