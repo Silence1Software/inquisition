@@ -13,6 +13,7 @@ public class Lobby extends GenericEntity {
 	private final Player host;
 	private final Set<Player> players;
 	private String secret;
+	private InitialStageOption initialStage;
 
 	public Lobby(Player host) {
 		this(null, host, new HashSet<>(), UUID.randomUUID().toString());
@@ -23,6 +24,7 @@ public class Lobby extends GenericEntity {
 		this.host = host;
 		this.players = players;
 		this.secret = secret;
+		this.initialStage = InitialStageOption.DAY;
 		validate();
 	}
 
@@ -36,6 +38,9 @@ public class Lobby extends GenericEntity {
 		}
 		if(secret == null) {
 			throw new IllegalArgumentException("Secret cannot be null");
+		}
+		if(initialStage == null) {
+			throw new IllegalArgumentException("Initial stage cannot be null");
 		}
 	}
 
@@ -54,7 +59,7 @@ public class Lobby extends GenericEntity {
 	}
 
 	public Match createMatch() {
-		return new Match(players);
+		return new Match(getPlayers(), initialStage.getStage());
 	}
 
 	public Player getHost() {
@@ -69,5 +74,9 @@ public class Lobby extends GenericEntity {
 
 	public String getSecret() {
 		return secret;
+	}
+
+	public void setInitialStage(InitialStageOption initialStage) {
+		this.initialStage = initialStage;
 	}
 }

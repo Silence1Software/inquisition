@@ -1,18 +1,18 @@
 package br.com.lbenaducci.inquisition.domain.match.stage.dtos;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.match.MatchPlayer;
 
 public abstract class TurnCharacter {
-	private final Character character;
+	private final MatchPlayer matchPlayer;
 	private boolean canDoAction;
 
-	protected TurnCharacter(Character character, boolean canDoAction) {
-		this.character = character;
+	protected TurnCharacter(MatchPlayer matchPlayer, boolean canDoAction) {
+		this.matchPlayer = matchPlayer;
 		this.canDoAction = canDoAction;
 	}
 
-	public Character getCharacter() {
-		return character;
+	public MatchPlayer getMatchPlayer() {
+		return matchPlayer;
 	}
 
 	public boolean canDoAction() {
