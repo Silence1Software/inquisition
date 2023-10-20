@@ -4,7 +4,7 @@ import br.com.lbenaducci.inquisition.domain.character.Character;
 import br.com.lbenaducci.inquisition.domain.character.CharacterStatus;
 import br.com.lbenaducci.inquisition.domain.match.stage.dtos.VoteTurnCharacter;
 
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class Voting extends Stage<Character, VoteTurnCharacter> {
@@ -25,13 +25,13 @@ public final class Voting extends Stage<Character, VoteTurnCharacter> {
 			throw new IllegalArgumentException("All characters must vote");
 		}
 		Integer max = turnCharacters.stream()
-		                   .map(VoteTurnCharacter::getVotes)
-		                   .max(Integer::compareTo)
-		                   .orElse(null);
+		                            .map(VoteTurnCharacter::getVotes)
+		                            .max(Integer::compareTo)
+		                            .orElse(null);
 		List<Character> mostVoted = turnCharacters.stream()
-		                                 .filter(it -> it.getVotes() == max)
-		                                 .map(VoteTurnCharacter::getCharacter)
-		                                 .toList();
+		                                          .filter(it -> it.getVotes() == max)
+		                                          .map(VoteTurnCharacter::getCharacter)
+		                                          .toList();
 		if(mostVoted.size() > 1) {
 			return null;
 		}
@@ -44,14 +44,14 @@ public final class Voting extends Stage<Character, VoteTurnCharacter> {
 		AtomicReference<VoteTurnCharacter> atmVoter = new AtomicReference<>();
 		AtomicReference<VoteTurnCharacter> atmTarget = new AtomicReference<>();
 		turnCharacters.stream()
-		     .filter(it -> it.getCharacter().equals(voter) || it.getCharacter().equals(target))
-		     .forEach(it -> {
-			     if(it.getCharacter().equals(voter)) {
-				     atmVoter.set(it);
-			     } else {
-				     atmTarget.set(it);
-			     }
-		     });
+		              .filter(it -> it.getCharacter().equals(voter) || it.getCharacter().equals(target))
+		              .forEach(it -> {
+			              if(it.getCharacter().equals(voter)) {
+				              atmVoter.set(it);
+			              } else {
+				              atmTarget.set(it);
+			              }
+		              });
 		VoteTurnCharacter voterCharacter = atmVoter.get();
 		VoteTurnCharacter targetCharacter = atmTarget.get();
 		if(voterCharacter == null || !voterCharacter.canDoAction()) {

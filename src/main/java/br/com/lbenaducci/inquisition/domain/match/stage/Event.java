@@ -1,8 +1,22 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-public final class Event implements Stage{
+import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.match.stage.dtos.TurnCharacter;
+
+public final class Event extends Stage<Void, TurnCharacter> {
+
 	@Override
-	public Stage next() {
-		return new Discussion();
+	protected Stage<?, ? extends TurnCharacter> nextEvent() {
+		return null;
+	}
+
+	@Override
+	protected TurnCharacter toTurnCharacter(Character character) {
+		return null;
+	}
+
+	@Override
+	public Void getResult() {
+		return null;
 	}
 }

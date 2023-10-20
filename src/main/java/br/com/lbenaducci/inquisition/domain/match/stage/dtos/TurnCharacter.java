@@ -6,7 +6,7 @@ public abstract class TurnCharacter {
 	private final Character character;
 	private boolean canDoAction;
 
-	public TurnCharacter(Character character, boolean canDoAction) {
+	protected TurnCharacter(Character character, boolean canDoAction) {
 		this.character = character;
 		this.canDoAction = canDoAction;
 	}

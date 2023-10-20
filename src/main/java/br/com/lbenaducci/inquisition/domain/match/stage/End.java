@@ -1,23 +1,21 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
 import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.match.stage.dtos.TurnCharacter;
 
-import java.util.SequencedSet;
-import java.util.Set;
-
-public final class End implements Stage{
+public final class End extends Stage<Void, TurnCharacter> {
 	@Override
-	public Stage next() {
+	protected Stage<?, ? extends TurnCharacter> nextEvent() {
 		return null;
 	}
 
 	@Override
-	public SequencedSet<Character> getCharacter() {
+	protected TurnCharacter toTurnCharacter(Character character) {
 		return null;
 	}
 
 	@Override
-	public void setCharacters(Set<Character> characters) {
-
+	public Void getResult() {
+		return null;
 	}
 }

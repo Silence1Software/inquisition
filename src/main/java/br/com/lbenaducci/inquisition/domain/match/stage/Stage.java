@@ -8,11 +8,15 @@ import java.util.*;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
 
-public sealed abstract class Stage<R, T extends TurnCharacter> permits Day, Discussion, End, Event, Night, Voting {
+public abstract sealed class Stage<R, T extends TurnCharacter> permits Day, Discussion, End, Event, Night, Voting {
 	private final Set<Character> characters = new HashSet<>();
 	protected final List<T> turnCharacters = new ArrayList<>();
 
-	public final Stage<?, ?> next() {
+	public static <O extends Stage<?, ? extends TurnCharacter> & InitialStage> void start(O startEvent, Set<Character> characters) {
+		((Stage<?, ?>) startEvent).setCharacters(characters);
+	}
+
+	public final Stage<?, ? extends TurnCharacter> next() {
 		Set<Character> winners = getCharacter().stream()
 		                                       .filter(it -> it.isWinner(getCharacter()))
 		                                       .collect(toSet());
@@ -22,19 +26,19 @@ public sealed abstract class Stage<R, T extends TurnCharacter> permits Day, Disc
 			return nextEvent;
 		}
 
-		End end = new End();
+		Stage<?, ?> end = new End();
 		end.setCharacters(winners);
 
 		return end;
 	}
 
-	protected abstract Stage<?, ?> nextEvent();
+	protected abstract Stage<?, ? extends TurnCharacter> nextEvent();
 
 	public final Set<Character> getCharacter() {
 		return Collections.unmodifiableSet(characters);
 	}
 
-	protected final void setCharacters(Set<Character> characters) {
+	private void setCharacters(Set<Character> characters) {
 		this.characters.addAll(characters);
 		getCharacter().forEach(it -> turnCharacters.add(toTurnCharacter(it)));
 		Collections.shuffle(turnCharacters);
