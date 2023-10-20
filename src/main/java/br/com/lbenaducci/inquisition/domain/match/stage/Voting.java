@@ -2,66 +2,86 @@ package br.com.lbenaducci.inquisition.domain.match.stage;
 
 import br.com.lbenaducci.inquisition.domain.character.Character;
 import br.com.lbenaducci.inquisition.domain.character.CharacterStatus;
+import br.com.lbenaducci.inquisition.domain.match.stage.dtos.CharacterVote;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toSet;
+
 public final class Voting implements Stage {
-	private final Map<Character, Integer> votes = new HashMap<>();
-	private final Set<Character> characters = new HashSet<>();
-	private final SequencedMap<Character, Boolean> available = new LinkedHashMap<>();
+	private final List<CharacterVote> votes = new ArrayList<>();
 
 	@Override
 	public Stage next() {
-		Set<Character> winners = characters.stream().filter(it -> it.win(characters)).collect(Collectors.toSet());
-		if(winners.isEmpty()){
+		Set<Character> winners = votes.stream()
+		                              .map(CharacterVote::getCharacter)
+		                              .collect(collectingAndThen(toSet(), l -> l.stream()
+		                                                                        .filter(it -> it.win(l))
+		                                                                        .collect(toSet())));
+		if(winners.isEmpty()) {
 			return new Day();
 		}
+
 		End end = new End();
 		end.setCharacters(winners);
+
 		return end;
 	}
 
 	@Override
 	public SequencedSet<Character> getCharacter() {
-		return available.sequencedKeySet();
+		return votes.stream()
+		            .filter(CharacterVote::canVote)
+		            .map(CharacterVote::getCharacter)
+		            .collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	@Override
 	public void setCharacters(Set<Character> characters) {
-		this.characters.addAll(characters);
-		characters.stream()
-		          .filter(it -> it.getStatus() != CharacterStatus.DEAD || it.canVote())
-		          .collect(Collectors.collectingAndThen(Collectors.toList(), l -> {
-			          Collections.shuffle(l);
-			          return l;
-		          })).forEach(it -> available.put(it, true));
+		characters.forEach(it -> {
+			votes.add(new CharacterVote(it, it.getStatus() != CharacterStatus.DEAD && it.canVote()));
+		});
+		Collections.shuffle(votes);
 	}
 
 	public void vote(Character voter, Character target) {
-		boolean permits = available.getOrDefault(voter, false);
-		if(!permits) {
+		AtomicReference<CharacterVote> atmVoter = new AtomicReference<>();
+		AtomicReference<CharacterVote> atmTarget = new AtomicReference<>();
+		votes.stream()
+		     .filter(it -> it.getCharacter().equals(voter) || it.getCharacter().equals(target))
+		     .forEach(it -> {
+			     if(it.getCharacter().equals(voter)) {
+				     atmVoter.set(it);
+			     } else {
+				     atmTarget.set(it);
+			     }
+		     });
+		CharacterVote characterVoter = atmVoter.get();
+		CharacterVote characterTarget = atmTarget.get();
+		if(characterVoter == null || !characterVoter.canVote()) {
 			throw new IllegalArgumentException("Character cannot vote");
 		}
-		if(target.getStatus() == CharacterStatus.DEAD) {
+		if(characterTarget == null || characterTarget.getCharacter().getStatus() == CharacterStatus.DEAD) {
 			throw new IllegalArgumentException("Character cannot voted");
 		}
-		votes.put(target, votes.get(target) + 1);
-		available.put(voter, false);
+		characterTarget.vote();
+		characterVoter.setCanVote(false);
 	}
 
 	public Character getResult() {
-		if(available.containsValue(true)) {
+		if(votes.stream().anyMatch(CharacterVote::canVote)) {
 			throw new IllegalArgumentException("All characters must vote");
 		}
-		Integer max = votes.values()
-		                   .stream()
+		Integer max = votes.stream()
+		                   .map(CharacterVote::getVotes)
 		                   .max(Integer::compareTo)
 		                   .orElse(null);
-		List<Character> mostVoted = votes.entrySet()
-		                                 .stream()
-		                                 .filter(it -> it.getValue().equals(max))
-		                                 .map(Map.Entry::getKey)
+		List<Character> mostVoted = votes.stream()
+		                                 .filter(it -> it.getVotes() == max)
+		                                 .map(CharacterVote::getCharacter)
 		                                 .toList();
 		if(mostVoted.size() > 1) {
 			return null;
