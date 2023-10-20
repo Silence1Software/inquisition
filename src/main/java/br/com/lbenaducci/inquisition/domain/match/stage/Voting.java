@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toSet;
 
-public final class Voting implements Stage {
+public final class Voting implements Stage<Character> {
 	private final List<CharacterVote> votes = new ArrayList<>();
 
 	@Override
-	public Stage next() {
+	public Stage<?> next() {
 		Set<Character> winners = votes.stream()
 		                              .map(CharacterVote::getCharacter)
 		                              .collect(collectingAndThen(toSet(), l -> l.stream()
-		                                                                        .filter(it -> it.win(l))
+		                                                                        .filter(it -> it.isWinner(l))
 		                                                                        .collect(toSet())));
 		if(winners.isEmpty()) {
 			return new Day();
@@ -47,6 +47,27 @@ public final class Voting implements Stage {
 		Collections.shuffle(votes);
 	}
 
+	@Override
+	public Character getResult() {
+		if(votes.stream().anyMatch(CharacterVote::canVote)) {
+			throw new IllegalArgumentException("All characters must vote");
+		}
+		Integer max = votes.stream()
+		                   .map(CharacterVote::getVotes)
+		                   .max(Integer::compareTo)
+		                   .orElse(null);
+		List<Character> mostVoted = votes.stream()
+		                                 .filter(it -> it.getVotes() == max)
+		                                 .map(CharacterVote::getCharacter)
+		                                 .toList();
+		if(mostVoted.size() > 1) {
+			return null;
+		}
+		Character kicked = mostVoted.getFirst();
+		kicked.onKicked();
+		return kicked;
+	}
+
 	public void vote(Character voter, Character target) {
 		AtomicReference<CharacterVote> atmVoter = new AtomicReference<>();
 		AtomicReference<CharacterVote> atmTarget = new AtomicReference<>();
@@ -69,23 +90,5 @@ public final class Voting implements Stage {
 		}
 		characterTarget.vote();
 		characterVoter.setCanVote(false);
-	}
-
-	public Character getResult() {
-		if(votes.stream().anyMatch(CharacterVote::canVote)) {
-			throw new IllegalArgumentException("All characters must vote");
-		}
-		Integer max = votes.stream()
-		                   .map(CharacterVote::getVotes)
-		                   .max(Integer::compareTo)
-		                   .orElse(null);
-		List<Character> mostVoted = votes.stream()
-		                                 .filter(it -> it.getVotes() == max)
-		                                 .map(CharacterVote::getCharacter)
-		                                 .toList();
-		if(mostVoted.size() > 1) {
-			return null;
-		}
-		return mostVoted.getFirst().onKicked();
 	}
 }

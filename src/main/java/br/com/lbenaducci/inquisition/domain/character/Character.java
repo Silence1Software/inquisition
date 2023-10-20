@@ -15,7 +15,9 @@ public interface Character {
 
 	void setCanVote(boolean canVote);
 
-	Character onKicked();
+	boolean isWinner(Set<Character> characters);
 
-	boolean win(Set<Character> characters);
+	void onKicked();
+
+	void onDeath();
 }

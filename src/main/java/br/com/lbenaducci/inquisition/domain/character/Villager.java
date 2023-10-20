@@ -23,6 +23,9 @@ public class Villager implements Character {
 
 	@Override
 	public void setStatus(CharacterStatus status) {
+		if(status == CharacterStatus.DEAD) {
+			throw new IllegalArgumentException("Cannot set status to DEAD");
+		}
 		this.status = status;
 	}
 
@@ -37,13 +40,17 @@ public class Villager implements Character {
 	}
 
 	@Override
-	public Character onKicked() {
-		setStatus(CharacterStatus.DEAD);
-		return this;
+	public boolean isWinner(Set<Character> characters) {
+		return status != CharacterStatus.DEAD && characters.stream().allMatch(Villager.class::isInstance);
 	}
 
 	@Override
-	public boolean win(Set<Character> characters) {
-		return status != CharacterStatus.DEAD && characters.stream().allMatch(Villager.class::isInstance);
+	public void onKicked() {
+		this.status = CharacterStatus.DEAD;
+	}
+
+	@Override
+	public void onDeath() {
+		this.status = CharacterStatus.DEAD;
 	}
 }
