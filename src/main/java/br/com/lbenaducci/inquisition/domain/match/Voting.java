@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
 
 import java.util.HashMap;
 import java.util.Map;

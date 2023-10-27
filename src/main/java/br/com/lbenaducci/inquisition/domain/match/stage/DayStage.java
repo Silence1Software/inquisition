@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
 
 public final class DayStage extends InitialStage<Void> {
 	@Override

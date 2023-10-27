@@ -1,5 +1,7 @@
 package br.com.lbenaducci.inquisition.domain.character;
 
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
+
 import java.util.Set;
 
 public class Villager extends Character {

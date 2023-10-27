@@ -1,9 +1,13 @@
 package br.com.lbenaducci.inquisition;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.night.NightTargetAction;
+import br.com.lbenaducci.inquisition.domain.character.night.Vampire;
+import br.com.lbenaducci.inquisition.domain.lobby.InitialStageOption;
 import br.com.lbenaducci.inquisition.domain.lobby.Lobby;
 import br.com.lbenaducci.inquisition.domain.match.Match;
-import br.com.lbenaducci.inquisition.domain.match.stage.VotingStage;
+import br.com.lbenaducci.inquisition.domain.match.stage.EndStage;
+import br.com.lbenaducci.inquisition.domain.match.stage.Stage;
 import br.com.lbenaducci.inquisition.domain.player.Player;
 
 import java.util.Set;
@@ -22,16 +26,30 @@ public class InquisitionApplication {
 
 		Lobby lobby = new Lobby(leo);
 		lobby.addPlayer(david, diego, paulo, ana);
+		lobby.setInitialStage(InitialStageOption.NIGHT);
 
 		Match match = lobby.createMatch();
 
 		Set<Character> characters = match.getCharacters();
 		characters.forEach(System.out::println);
-		Character characterAna = characters.stream().filter(it -> it.getPlayer().equals(ana)).findFirst().orElse(null);
-		for(Character character: characters) {
-			if(match.getCurrentStage() instanceof VotingStage votingStage) {
-				character.vote(characterAna, votingStage.getVoting());
+		System.out.println("---------------------------------------\n");
+
+		for(Character character: match.getSequenceAction()) {
+			System.out.println(character);
+			if(character instanceof NightTargetAction vampire) {
+				//				Character nonVampire = characters.stream().filter(it -> !(it instanceof Vampire)).findFirst().orElse(null);
+				//				vampire.nightAction(nonVampire);
+				characters.stream().filter(it -> !(it instanceof Vampire)).forEach(vampire::onNightAction);
 			}
+		}
+
+		Stage<?> currentStage = match.getCurrentStage();
+		Object result = currentStage.getResult();
+
+		Stage<?> next = currentStage.next();
+		if(next instanceof EndStage end) {
+			System.out.println("---------------------------------------\n");
+			System.out.println("Winners = " + end.getResult());
 		}
 	}
 

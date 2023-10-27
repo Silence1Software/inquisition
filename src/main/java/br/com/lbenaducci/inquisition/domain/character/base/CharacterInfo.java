@@ -1,4 +1,4 @@
-package br.com.lbenaducci.inquisition.domain.character;
+package br.com.lbenaducci.inquisition.domain.character.base;
 
 import br.com.lbenaducci.inquisition.domain.player.Player;
 
@@ -14,8 +14,16 @@ public abstract sealed class CharacterInfo extends CharacterStatusControl permit
 	}
 
 	public final void setPlayer(Player player) {
-		if(this.player != null) {
+		if(this.player == null) {
 			this.player = player;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getName() + "{" +
+				"player=" + player.getName() +
+				", status=" + getStatus() +
+				'}';
 	}
 }

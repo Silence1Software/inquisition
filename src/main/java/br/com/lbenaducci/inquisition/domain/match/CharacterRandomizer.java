@@ -1,9 +1,9 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
-import br.com.lbenaducci.inquisition.domain.character.Vampire;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.night.Vampire;
 import br.com.lbenaducci.inquisition.domain.character.Villager;
-import br.com.lbenaducci.inquisition.domain.character.Witch;
+import br.com.lbenaducci.inquisition.domain.character.night.Witch;
 import br.com.lbenaducci.inquisition.domain.player.Player;
 
 import java.security.SecureRandom;

@@ -1,8 +1,13 @@
-package br.com.lbenaducci.inquisition.domain.character;
+package br.com.lbenaducci.inquisition.domain.character.base;
 
 public abstract sealed class CharacterStatusControl permits CharacterInfo {
 	private CharacterStatus status;
 	private boolean canVote;
+
+	protected CharacterStatusControl() {
+		this.status = CharacterStatus.ALIVE;
+		this.canVote = true;
+	}
 
 	public final CharacterStatus getStatus() {
 		return status;

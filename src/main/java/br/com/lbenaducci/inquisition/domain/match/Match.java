@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
 import br.com.lbenaducci.inquisition.domain.generic.GenericEntity;
 import br.com.lbenaducci.inquisition.domain.match.stage.InitialStage;
 import br.com.lbenaducci.inquisition.domain.match.stage.Stage;

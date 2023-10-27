@@ -1,17 +1,18 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.night.NightCharacter;
 
 public final class NightStage extends InitialStage<Void> {
 
 	@Override
 	protected Stage<?> nextEvent() {
-		return null;
+		return new DiscussionStage();
 	}
 
 	@Override
 	protected boolean canDoAction(Character character) {
-		return false;
+		return character instanceof NightCharacter;
 	}
 
 	@Override

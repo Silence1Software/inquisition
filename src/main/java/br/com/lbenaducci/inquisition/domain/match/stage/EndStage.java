@@ -1,8 +1,10 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-import br.com.lbenaducci.inquisition.domain.character.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.Character;
 
-public final class EndStage extends Stage<Void> {
+import java.util.Set;
+
+public final class EndStage extends Stage<Set<Character>> {
 	@Override
 	protected Stage<?> nextEvent() {
 		return null;
@@ -14,7 +16,7 @@ public final class EndStage extends Stage<Void> {
 	}
 
 	@Override
-	public Void getResult() {
-		return null;
+	public Set<Character> getResult() {
+		return getCharacters();
 	}
 }
