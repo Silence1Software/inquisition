@@ -1,5 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
+import br.com.lbenaducci.inquisition.domain.character.Character;
 import br.com.lbenaducci.inquisition.domain.character.Vampire;
 import br.com.lbenaducci.inquisition.domain.character.Villager;
 import br.com.lbenaducci.inquisition.domain.character.Witch;
@@ -14,26 +15,29 @@ public class CharacterRandomizer {
 		throw new IllegalAccessException("Utility class");
 	}
 
-	public static Set<MatchPlayer> randomize(Set<Player> players) {
-		Set<MatchPlayer> matchPlayers = new HashSet<>();
+	public static Set<Character> randomize(Set<Player> players) {
+		Set<Character> matchPlayers = new HashSet<>();
 
 		SecureRandom random = new SecureRandom();
-		int witch = random.nextInt(players.size());
-		int vampire = random.nextInt(players.size());
-		while(vampire == witch) {
-			vampire = random.nextInt(players.size());
+		int witchRng = random.nextInt(players.size());
+		int vampireRng = random.nextInt(players.size());
+		while(vampireRng == witchRng) {
+			vampireRng = random.nextInt(players.size());
 		}
 
 		int i = 0;
 		for(Player player: players) {
-			if(i == witch) {
-				matchPlayers.add(new MatchPlayer(player, new Witch()));
-			} else if(i == vampire) {
-				matchPlayers.add(new MatchPlayer(player, new Vampire()));
+			Character character;
+			if(i == witchRng) {
+				character = new Witch();
+			} else if(i == vampireRng) {
+				character = new Vampire();
 			} else {
-				matchPlayers.add(new MatchPlayer(player, new Villager()));
+				character = new Villager();
 			}
 			i++;
+			character.setPlayer(player);
+			matchPlayers.add(character);
 		}
 
 		return matchPlayers;

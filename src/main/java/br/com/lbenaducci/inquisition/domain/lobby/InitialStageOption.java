@@ -18,5 +18,5 @@ public enum InitialStageOption {
 		}
 	};
 
-	public abstract InitialStage<?, ?> getStage();
+	public abstract InitialStage<?> getStage();
 }

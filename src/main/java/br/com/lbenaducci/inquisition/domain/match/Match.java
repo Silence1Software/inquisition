@@ -1,5 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
+import br.com.lbenaducci.inquisition.domain.character.Character;
 import br.com.lbenaducci.inquisition.domain.generic.GenericEntity;
 import br.com.lbenaducci.inquisition.domain.match.stage.InitialStage;
 import br.com.lbenaducci.inquisition.domain.match.stage.Stage;
@@ -8,30 +9,29 @@ import br.com.lbenaducci.inquisition.domain.player.Player;
 import java.util.Collections;
 import java.util.SequencedSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Match extends GenericEntity {
-	private final Set<MatchPlayer> matchPlayers;
+	private final Set<Character> characters;
 	private MatchStatus status;
-	private Stage<?, ?> currentStage;
+	private Stage<?> currentStage;
 
-	public Match(Set<Player> players, InitialStage<?, ?> initialStage) {
-		this.matchPlayers = CharacterRandomizer.randomize(players);
+	public Match(Set<Player> players, InitialStage<?> initialStage) {
+		this.characters = CharacterRandomizer.randomize(players);
 		status = MatchStatus.RUNNING;
 		currentStage = initialStage;
-		InitialStage.start(initialStage, matchPlayers);
+		InitialStage.start(initialStage, characters);
 		validate();
 	}
 
 	@Override
 	public void validate() {
-		if(matchPlayers == null) {
+		if(characters == null) {
 			throw new IllegalArgumentException("Characters cannot be null");
 		}
 		if(status == null) {
 			throw new IllegalArgumentException("Status cannot be null");
 		}
-		if(matchPlayers.size() < 5) {
+		if(characters.size() < 5) {
 			throw new IllegalArgumentException("Must have at least 5 characters");
 		}
 		if(currentStage == null) {
@@ -39,12 +39,16 @@ public class Match extends GenericEntity {
 		}
 	}
 
-	public SequencedSet<MatchPlayer> getSequenceAction() {
+	public SequencedSet<Character> getSequenceAction() {
 		return currentStage.getSequenceAction();
 	}
 
-	public Set<MatchPlayer> getMatchPlayers() {
-		return Collections.unmodifiableSet(matchPlayers);
+	public Stage<?> getCurrentStage() {
+		return currentStage;
+	}
+
+	public Set<Character> getCharacters() {
+		return Collections.unmodifiableSet(characters);
 	}
 
 	public MatchStatus getStatus() {

@@ -1,20 +1,17 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
 import br.com.lbenaducci.inquisition.domain.character.Character;
-import br.com.lbenaducci.inquisition.domain.match.MatchPlayer;
-import br.com.lbenaducci.inquisition.domain.match.stage.dtos.TurnCharacter;
 
-public final class EndStage extends Stage<Void, TurnCharacter> {
+public final class EndStage extends Stage<Void> {
 	@Override
-	protected Stage<?, ? extends TurnCharacter> nextEvent() {
+	protected Stage<?> nextEvent() {
 		return null;
 	}
 
 	@Override
-	protected TurnCharacter toTurnCharacter(MatchPlayer matchPlayers) {
-		return null;
+	protected boolean canDoAction(Character character) {
+		return false;
 	}
-
 
 	@Override
 	public Void getResult() {
