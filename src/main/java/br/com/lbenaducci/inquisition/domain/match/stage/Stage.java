@@ -6,7 +6,7 @@ import br.com.lbenaducci.inquisition.domain.character.base.Character;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract sealed class Stage<R> permits DiscussionStage, EndStage, EventStage, InitialStage, VotingStage {
+public abstract sealed class Stage<R> permits DiscussionStage, EndStage, EventStage, JudgmentStage, VotingStage {
 	private final List<AbstractCharacter> characters = new ArrayList<>();
 	private final List<Character> queue = new ArrayList<>();
 
@@ -31,9 +31,9 @@ public abstract sealed class Stage<R> permits DiscussionStage, EndStage, EventSt
 		return characters.stream().collect(Collectors.toUnmodifiableSet());
 	}
 
-	protected final void setCharacters(Set<AbstractCharacter> matchPlayers) {
-		this.characters.addAll(matchPlayers);
-		Collections.shuffle(characters);
+	protected final void setCharacters(Set<AbstractCharacter> characters) {
+		this.characters.addAll(characters);
+		Collections.shuffle(this.characters);
 		queue.addAll(getSequenceAction());
 	}
 

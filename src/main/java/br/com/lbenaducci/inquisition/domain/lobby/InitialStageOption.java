@@ -3,6 +3,7 @@ package br.com.lbenaducci.inquisition.domain.lobby;
 import br.com.lbenaducci.inquisition.domain.match.stage.DayStage;
 import br.com.lbenaducci.inquisition.domain.match.stage.InitialStage;
 import br.com.lbenaducci.inquisition.domain.match.stage.NightStage;
+import br.com.lbenaducci.inquisition.domain.match.stage.Stage;
 
 public enum InitialStageOption {
 	DAY {
@@ -18,5 +19,5 @@ public enum InitialStageOption {
 		}
 	};
 
-	public abstract InitialStage<?> getStage();
+	public abstract <S extends Stage<?> & InitialStage> S getStage();
 }

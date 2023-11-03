@@ -2,7 +2,7 @@ package br.com.lbenaducci.inquisition.domain.match.stage;
 
 import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 
-public final class DayStage extends InitialStage<Void> {
+public final class DayStage extends VotingStage<Void> implements InitialStage {
 	@Override
 	protected Stage<?> nextEvent() {
 		return null;

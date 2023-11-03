@@ -8,9 +8,8 @@ import br.com.lbenaducci.inquisition.domain.match.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public final class NightStage extends InitialStage<List<Registry>> implements ActionStage<NightCharacter> {
+public final class NightStage extends VotingStage<List<Registry>> implements ActionStage<NightCharacter>, InitialStage {
 	private final List<Registry> registries = new ArrayList<>();
 
 	@Override
@@ -25,16 +24,30 @@ public final class NightStage extends InitialStage<List<Registry>> implements Ac
 
 	@Override
 	protected List<Registry> getResult() {
+		AbstractCharacter pobreCoitado = voting.getWinner();
+		if(pobreCoitado != null) {
+			registries.addAll(pobreCoitado.onDeath());
+		}
 		return registries;
 	}
 
 	@Override
 	public <O extends NightCharacter> void action(O character, Function<O, List<Registry>> action) {
-		if(character.equals(nextCharacter())){
+		if(!character.isAlive()) {
+			throw new IllegalArgumentException("Character is not alive");
+		}
+		if(character.equals(nextCharacter())) {
 			List<Registry> actionRegistries = action.apply(character);
 			registries.addAll(actionRegistries.stream().filter(it -> it.action() == Action.KILL).toList());
 			removeQueue(character);
-		}else {
+			for(Registry registry: actionRegistries) {
+				for(AbstractCharacter target: registry.target()) {
+					if(!target.isAlive()) {
+						removeQueue(target);
+					}
+				}
+			}
+		} else {
 			throw new IllegalArgumentException("Character is not a next character");
 		}
 	}

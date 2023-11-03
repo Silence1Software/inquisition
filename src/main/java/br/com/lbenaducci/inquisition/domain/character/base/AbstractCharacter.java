@@ -9,6 +9,12 @@ import java.util.Set;
 
 public non-sealed abstract class AbstractCharacter extends CharacterInfo implements Character {
 
+	public final void vote(AbstractCharacter target, Voting voting) {
+		if(canVote()) {
+			voting.vote(this, target);
+		}
+	}
+
 	public void onKicked() {
 		setStatus(CharacterStatus.DEAD);
 	}

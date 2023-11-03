@@ -15,7 +15,7 @@ public class Match extends GenericEntity {
 	private MatchStatus status;
 	private Stage<?> currentStage;
 
-	public Match(Set<Player> players, InitialStage<?> initialStage) {
+	public <S extends Stage<?> & InitialStage> Match(Set<Player> players, S initialStage) {
 		this.characters = CharacterRandomizer.randomize(players);
 		status = MatchStatus.RUNNING;
 		currentStage = initialStage;
@@ -45,6 +45,12 @@ public class Match extends GenericEntity {
 
 	public Stage<?> getCurrentStage() {
 		return currentStage;
+	}
+
+	public Object result() {
+		Object result = currentStage.result();
+		this.currentStage = currentStage.nextStage();
+		return result;
 	}
 
 	public Set<AbstractCharacter> getCharacters() {
