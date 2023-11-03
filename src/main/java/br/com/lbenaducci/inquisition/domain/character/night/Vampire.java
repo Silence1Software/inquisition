@@ -2,7 +2,7 @@ package br.com.lbenaducci.inquisition.domain.character.night;
 
 import br.com.lbenaducci.inquisition.domain.character.base.Character;
 import br.com.lbenaducci.inquisition.domain.match.Action;
-import br.com.lbenaducci.inquisition.domain.match.Register;
+import br.com.lbenaducci.inquisition.domain.match.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,10 @@ public class Vampire extends Character implements NightTargetAction {
 	}
 
 	@Override
-	public List<Register> onNightAction(Character target) {
-		List<Register> registries = new ArrayList<>(target.onDeath());
+	public List<Registry> onNightAction(Character target) {
+		List<Registry> registries = new ArrayList<>(target.onDeath());
 		if(!target.isAlive()) {
-			registries.add(Register.of(this, Action.KILL, target));
+			registries.add(Registry.of(this, Action.KILL, target));
 		}
 		return registries;
 	}

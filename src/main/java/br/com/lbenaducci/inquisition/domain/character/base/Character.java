@@ -1,7 +1,7 @@
 package br.com.lbenaducci.inquisition.domain.character.base;
 
 import br.com.lbenaducci.inquisition.domain.match.Action;
-import br.com.lbenaducci.inquisition.domain.match.Register;
+import br.com.lbenaducci.inquisition.domain.match.Registry;
 import br.com.lbenaducci.inquisition.domain.match.Voting;
 
 import java.util.List;
@@ -21,13 +21,13 @@ public non-sealed abstract class Character extends CharacterInfo {
 		setStatus(CharacterStatus.DEAD);
 	}
 
-	public List<Register> onDeath() {
+	public List<Registry> onDeath() {
 		if(getStatus() == CharacterStatus.PROTECTED) {
 			setStatus(CharacterStatus.ALIVE);
-			return List.of(Register.of(this, Action.PROTECTED));
+			return List.of(Registry.of(this, Action.PROTECTED));
 		} else {
 			setStatus(CharacterStatus.DEAD);
-			return List.of(Register.of(this, Action.DIE));
+			return List.of(Registry.of(this, Action.DIE));
 		}
 	}
 }
