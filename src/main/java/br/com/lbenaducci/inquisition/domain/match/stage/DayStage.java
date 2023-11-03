@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 
 public final class DayStage extends InitialStage<Void> {
 	@Override
@@ -9,7 +9,7 @@ public final class DayStage extends InitialStage<Void> {
 	}
 
 	@Override
-	protected boolean canDoAction(Character character) {
+	protected boolean canDoAction(AbstractCharacter character) {
 		return false;
 	}
 
@@ -17,4 +17,5 @@ public final class DayStage extends InitialStage<Void> {
 	public Void getResult() {
 		return null;
 	}
+
 }

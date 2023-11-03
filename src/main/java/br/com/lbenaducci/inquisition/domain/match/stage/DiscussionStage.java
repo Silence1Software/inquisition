@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 
 public final class DiscussionStage extends Stage<Void> {
 	@Override
@@ -9,7 +9,7 @@ public final class DiscussionStage extends Stage<Void> {
 	}
 
 	@Override
-	protected boolean canDoAction(Character character) {
+	protected boolean canDoAction(AbstractCharacter character) {
 		return false;
 	}
 

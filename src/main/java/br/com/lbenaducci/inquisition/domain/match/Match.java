@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
-import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 import br.com.lbenaducci.inquisition.domain.generic.GenericEntity;
 import br.com.lbenaducci.inquisition.domain.match.stage.InitialStage;
 import br.com.lbenaducci.inquisition.domain.match.stage.Stage;
@@ -11,7 +11,7 @@ import java.util.SequencedSet;
 import java.util.Set;
 
 public class Match extends GenericEntity {
-	private final Set<Character> characters;
+	private final Set<AbstractCharacter> characters;
 	private MatchStatus status;
 	private Stage<?> currentStage;
 
@@ -39,7 +39,7 @@ public class Match extends GenericEntity {
 		}
 	}
 
-	public SequencedSet<Character> getSequenceAction() {
+	public SequencedSet<AbstractCharacter> getSequenceAction() {
 		return currentStage.getSequenceAction();
 	}
 
@@ -47,7 +47,7 @@ public class Match extends GenericEntity {
 		return currentStage;
 	}
 
-	public Set<Character> getCharacters() {
+	public Set<AbstractCharacter> getCharacters() {
 		return Collections.unmodifiableSet(characters);
 	}
 

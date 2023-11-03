@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition.domain.match;
 
-import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 import br.com.lbenaducci.inquisition.domain.character.night.Vampire;
 import br.com.lbenaducci.inquisition.domain.character.Villager;
 import br.com.lbenaducci.inquisition.domain.character.night.Witch;
@@ -15,8 +15,8 @@ public class CharacterRandomizer {
 		throw new IllegalAccessException("Utility class");
 	}
 
-	public static Set<Character> randomize(Set<Player> players) {
-		Set<Character> matchPlayers = new HashSet<>();
+	public static Set<AbstractCharacter> randomize(Set<Player> players) {
+		Set<AbstractCharacter> matchPlayers = new HashSet<>();
 
 		SecureRandom random = new SecureRandom();
 		int witchRng = random.nextInt(players.size());
@@ -27,7 +27,7 @@ public class CharacterRandomizer {
 
 		int i = 0;
 		for(Player player: players) {
-			Character character;
+			AbstractCharacter character;
 			if(i == witchRng) {
 				character = new Witch();
 			} else if(i == vampireRng) {

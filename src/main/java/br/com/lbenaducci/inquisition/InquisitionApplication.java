@@ -1,6 +1,6 @@
 package br.com.lbenaducci.inquisition;
 
-import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 import br.com.lbenaducci.inquisition.domain.character.night.NightTargetAction;
 import br.com.lbenaducci.inquisition.domain.character.night.Vampire;
 import br.com.lbenaducci.inquisition.domain.lobby.InitialStageOption;
@@ -31,25 +31,25 @@ public class InquisitionApplication {
 
 		Match match = lobby.createMatch();
 
-		Set<Character> characters = match.getCharacters();
+		Set<AbstractCharacter> characters = match.getCharacters();
 		characters.forEach(System.out::println);
 		System.out.println("---------------------------------------\n");
 
 		Stage<?> currentStage = match.getCurrentStage();
-		for(Character character: match.getSequenceAction()) {
+		for(AbstractCharacter character: match.getSequenceAction()) {
 			if(currentStage instanceof NightStage nightStage) {
 				if(character instanceof NightTargetAction vampire) {
-					Character nonVampire = characters.stream().filter(it -> !(it instanceof Vampire)).findFirst().orElse(null);
-					vampire.nightAction(nonVampire, nightStage);
+					AbstractCharacter nonVampire = characters.stream().filter(it -> !(it instanceof Vampire)).findFirst().orElse(null);
+					nightStage.action(vampire, (v) -> v.action(nonVampire));
 				}
 			}
 		}
 
-		Object result = currentStage.getResult();
+		Object result = currentStage.result();
 		System.out.println("---------------------------------------\n");
 		System.out.println(result);
 
-		Stage<?> next = currentStage.next();
+		Stage<?> next = currentStage.nextStage();
 		if(next instanceof EndStage end) {
 			System.out.println("---------------------------------------\n");
 			System.out.println("Winners = " + end.getResult());

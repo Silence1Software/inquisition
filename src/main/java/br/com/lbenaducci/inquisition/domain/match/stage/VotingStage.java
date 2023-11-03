@@ -1,9 +1,12 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 import br.com.lbenaducci.inquisition.domain.character.base.Character;
 import br.com.lbenaducci.inquisition.domain.match.Voting;
 
-public final class VotingStage extends Stage<Character> {
+import java.util.function.Function;
+
+public final class VotingStage extends Stage<AbstractCharacter> {
 	private final Voting voting = new Voting();
 
 	@Override
@@ -12,13 +15,13 @@ public final class VotingStage extends Stage<Character> {
 	}
 
 	@Override
-	protected boolean canDoAction(Character character) {
+	protected boolean canDoAction(AbstractCharacter character) {
 		return character.canVote();
 	}
 
 	@Override
-	public Character getResult() {
-		Character kicked = voting.getWinner();
+	public AbstractCharacter getResult() {
+		AbstractCharacter kicked = voting.getWinner();
 		kicked.onKicked();
 		return kicked;
 	}

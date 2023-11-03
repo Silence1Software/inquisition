@@ -2,7 +2,7 @@ package br.com.lbenaducci.inquisition.domain.character.base;
 
 import br.com.lbenaducci.inquisition.domain.player.Player;
 
-public abstract sealed class CharacterInfo extends CharacterStatusControl permits Character {
+public abstract sealed class CharacterInfo extends CharacterStatusControl permits AbstractCharacter {
 	private Player player;
 
 	public abstract String getName();

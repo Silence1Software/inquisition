@@ -1,18 +1,20 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 import br.com.lbenaducci.inquisition.domain.character.base.Character;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract sealed class Stage<R> permits DiscussionStage, EndStage, EventStage, InitialStage, VotingStage {
-	private final List<Character> characters = new ArrayList<>();
+	private final List<AbstractCharacter> characters = new ArrayList<>();
+	private final List<Character> queue = new ArrayList<>();
 
-	public final Stage<?> next() {
-		Set<Character> characterSet = getCharacters();
-		Set<Character> winners = characterSet.stream()
-		                                     .filter(it -> it.isWinner(characterSet))
-		                                     .collect(Collectors.toSet());
+	public final Stage<?> nextStage() {
+		Set<AbstractCharacter> characterSet = getCharacters();
+		Set<AbstractCharacter> winners = characterSet.stream()
+		                                             .filter(it -> it.isWinner(characterSet))
+		                                             .collect(Collectors.toSet());
 		if(winners.isEmpty()) {
 			Stage<?> nextEvent = nextEvent();
 			nextEvent.setCharacters(characterSet);
@@ -25,16 +27,25 @@ public abstract sealed class Stage<R> permits DiscussionStage, EndStage, EventSt
 		return end;
 	}
 
-	public final Set<Character> getCharacters() {
+	public final Set<AbstractCharacter> getCharacters() {
 		return characters.stream().collect(Collectors.toUnmodifiableSet());
 	}
 
-	protected final void setCharacters(Set<Character> matchPlayers) {
+	protected final void setCharacters(Set<AbstractCharacter> matchPlayers) {
 		this.characters.addAll(matchPlayers);
 		Collections.shuffle(characters);
+		queue.addAll(getSequenceAction());
 	}
 
-	public final SequencedSet<Character> getSequenceAction() {
+	protected void removeQueue(Character character) {
+		queue.remove(character);
+	}
+
+	public Character nextCharacter() {
+		return queue.getFirst();
+	}
+
+	public final SequencedSet<AbstractCharacter> getSequenceAction() {
 		return characters.stream()
 		                 .filter(this::canDoAction)
 		                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -42,7 +53,14 @@ public abstract sealed class Stage<R> permits DiscussionStage, EndStage, EventSt
 
 	protected abstract Stage<?> nextEvent();
 
-	protected abstract boolean canDoAction(Character character);
+	protected abstract boolean canDoAction(AbstractCharacter character);
 
-	public abstract R getResult();
+	protected abstract R getResult();
+
+	public R result() {
+		if(queue.isEmpty()) {
+			return getResult();
+		}
+		throw new IllegalStateException("Queue is not empty");
+	}
 }

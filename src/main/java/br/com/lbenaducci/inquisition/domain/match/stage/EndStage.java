@@ -1,22 +1,22 @@
 package br.com.lbenaducci.inquisition.domain.match.stage;
 
-import br.com.lbenaducci.inquisition.domain.character.base.Character;
+import br.com.lbenaducci.inquisition.domain.character.base.AbstractCharacter;
 
 import java.util.Set;
 
-public final class EndStage extends Stage<Set<Character>> {
+public final class EndStage extends Stage<Set<AbstractCharacter>> {
 	@Override
 	protected Stage<?> nextEvent() {
 		return null;
 	}
 
 	@Override
-	protected boolean canDoAction(Character character) {
+	protected boolean canDoAction(AbstractCharacter character) {
 		return false;
 	}
 
 	@Override
-	public Set<Character> getResult() {
+	public Set<AbstractCharacter> getResult() {
 		return getCharacters();
 	}
 }
