@@ -1,20 +1,22 @@
-package br.com.lbenaducci.inquisition.domain.player;
+package br.com.lbenaducci.inquisition.services;
 
-import br.com.lbenaducci.inquisition.domain.exception.NotFoundException;
-import br.com.lbenaducci.inquisition.domain.exception.ValidationException;
+import br.com.lbenaducci.inquisition.exception.NotFoundException;
+import br.com.lbenaducci.inquisition.exception.ValidationException;
+import br.com.lbenaducci.inquisition.models.entities.Player;
+import br.com.lbenaducci.inquisition.repositories.PlayerRepository;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class PlayerUseCase {
+@Service
+public class PlayerService {
 	private final PlayerRepository playerRepository;
 
-	public PlayerUseCase(PlayerRepository playerRepository) {
+	public PlayerService(PlayerRepository playerRepository) {
 		this.playerRepository = playerRepository;
 	}
 
-	public Player create(String name) {
-		Player player = new Player(UUID.randomUUID(), LocalDateTime.now(), name);
+	public Player save(Player player) {
 		return playerRepository.save(player);
 	}
 
@@ -30,7 +32,7 @@ public class PlayerUseCase {
 			throw new ValidationException("Name must not be null");
 		}
 		Player player = find(id);
-		player.changeName(name);
+		player.setName(name);
 		playerRepository.save(player);
 		return player;
 	}
